@@ -1297,7 +1297,7 @@ export const Home = props => {
         onBackdropPress={() => setVotingVisible(false)}>
         <View
           style={{
-            height: RF(900),
+          //  height: RF(500),
             width: '100%',
             paddingBottom: 30,
             backgroundColor: Colors.appWhite,
@@ -1329,7 +1329,9 @@ export const Home = props => {
             marginLeft: 20
           }}
             onPress={() => setVotingVisible(false)}>
-            <H1 >Ongoing Election</H1>
+          <H1 size={RF(7)} color={Colors.appPrimary}>
+                Add New Admin
+          </H1>
           </TouchableOpacity>
           <TouchableOpacity style={{
             marginVertical: 10,
