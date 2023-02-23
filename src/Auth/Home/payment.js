@@ -16,6 +16,7 @@ import { Width } from '../../../helper';
 import CircleImage from '../../../components/circleImage';
 import InputText from '../../../components/textInput';
 import { Button } from '../../../component/button';
+import { axiosCalls } from '../../../helper/api';
 
 
 export const Payment = props => {
@@ -23,6 +24,7 @@ export const Payment = props => {
   const [payment, setPayment] = useState(false);
   const [clickedTitle, setClickedTitle] = useState('');
   const [active, setActive] = useState('');
+  const [paymentLists,setPaymentList] = useState()
 
   const Estate = value => {
     setClickedTitle(value);
@@ -47,50 +49,77 @@ export const Payment = props => {
     setVisible(true);
   };
 
+  const getPayments = async () => {
+    try {
+
+      const res = await axiosCalls('/bills/payment', 'GET');
+      setPaymentList(res.data.payment);
+      
+
+    } catch (e) {
+      console.warn('get admin error...', e);
+    }
+  };
+
+useEffect(()=>{
+  getPayments()
+},[])
 
   const TransactionCard = props => {
     return (
       <View style={{ marginTop: RF(20) }}>
-        <View
-          style={{
-            // backgroundColor: Colors.appCard,
-            width: props.width,
-            height: props.height,
-            marginTop: props.marginTop,
-            borderRadius: 6,
-            flexDirection: 'row',
-          }}>
-          <View
-            style={{
-              backgroundColor: Colors.appThickbrown,
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginRight: 15,
-            }}>
-            <Image style={{ height: 19.5, width: 17 }} source={props.icon} />
-          </View>
-          <View style={{ width: '70%', paddingTop: '3%' }}>
-            <View>
-              <H1 size={RF(10)}>Water Payment</H1>
-            </View>
-            <View>
-              <P>Total Collection</P>
-            </View>
-          </View>
-          <View
-            style={{
-              // width: '30%',
 
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <H2 size={RF(10)}>₦90,000</H2>
-            <H1 size={RF(10)}>₦90,000</H1>
-          </View>
-        </View>
+{paymentLists?.map((each)=>{
+ var amount = parseInt(each.amount)
+  return(
+    <View
+    style={{
+      // backgroundColor: Colors.appCard,
+      width: props.width,
+      height: props.height,
+      marginTop: props.marginTop,
+      borderRadius: 6,
+      flexDirection: 'row',
+    }}>
+
+
+
+  <View
+      style={{
+        backgroundColor: Colors.appThickbrown,
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 15,
+      }}>
+      <Image style={{ height: 19.5, width: 17 }} source={props.icon} />
+    </View>
+    <View style={{ width: '70%', paddingTop: '3%' }}>
+      <View>
+        <H1 size={RF(10)}>{each.type}</H1>
+      </View>
+      <View>
+        <P>Total Collection</P>
+      </View>
+    </View>
+    <View
+      style={{
+        // width: '30%',
+
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <H1 size={RF(10)}>₦{each.amount.toLocaleString()}</H1>
+      {/* <H1 size={RF(10)}>₦90,000</H1> */}
+    </View>
+  
+  </View>
+  )
+})}
+
+       
       </View>
     );
   };
@@ -163,7 +192,7 @@ export const Payment = props => {
 
 
           <TransactionCard height={RF(80)} width={'100%'} icon={AppIcons.tap} />
-          <TransactionCard height={RF(80)} width={'100%'} icon={AppIcons.tap} />
+         
 
         </View>
       </> :

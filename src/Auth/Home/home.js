@@ -41,6 +41,11 @@ export const Home = props => {
   const [passcode, setPasscode] = useState('');
   const [votingVisible, setVotingVisible] = useState(false);
   const [balance, setBalance] = useState(null);
+  const [newElectionModal, setNewElectionModal] = useState(false)
+  const [allVotes, setAllVotes] = useState(false)
+  const [addNewCandidate, setAddNewCandidate] = useState(false)
+  const [deleteAdminModal, setDeleteAdminModal] = useState(false)
+
 
   const admin = () => {
     setVisible(true);
@@ -60,6 +65,7 @@ export const Home = props => {
   const edit = (user) => {
     setEditInfo(user);
     setActive('edit');
+    console.warn(user.userId)
   };
 
   const createAdmin = async () => {
@@ -92,7 +98,7 @@ export const Home = props => {
             setLoading(true);
 
             console.warn('payload coming', payLoad);
-            const res = await axiosCalls('/create', 'POST', payLoad);
+            const res = await axiosCwaalls('/admins/create', 'POST', payLoad);
             if (res?.data?.success == false) {
               console.warn('responce....>>>', res.data);
               ToastLong(res.data.message);
@@ -109,21 +115,36 @@ export const Home = props => {
       alert('unreliable network connection');
     }
   };
+
+  const deleteAdmin = async (id) => {
+    try {
+      const res = await axiosCalls(`/admins/${id}`, 'DEL');
+
+      // setAdmins(res.data.admins);
+      console.warn(res.data)
+
+    } catch (e) {
+      console.warn('get admin error...', e);
+    }
+  }
+
+
   useEffect(() => {
     getAdminList();
   }, []);
 
   useEffect(() => {
-  getWalletBalance()
+    getWalletBalance()
   }, []);
 
   const getAdminList = async () => {
     try {
-      console.warn('this is the admin list??>>>>');
+
       const res = await axiosCalls('/admins', 'GET');
       // console.warn('this is the admin list', res.data);
       // console.log('this is the admin list>>', res.data.admins[0]);
       setAdmins(res.data.admins);
+
       // console.warn('this is the admin list>>', res.data.admins.length);
     } catch (e) {
       console.warn('get admin error...', e);
@@ -310,7 +331,7 @@ export const Home = props => {
           />
           <MainCard
             text={'Forum'}
-            des={'Send message to all residence.'}
+            des={'Send message to all residencess.'}
             count={1}
             icon={AppIcons.chat}
             onPress={() => updateActive('Forum')}
@@ -331,7 +352,8 @@ export const Home = props => {
             des={'Add and manage candidates'}
             count={12}
             icon={AppIcons.voting}
-            onPress={() => votingModal()}
+            //onPress={() => votingModal()}
+            onPress={() => updateActive('Voting')}
           />
         </View>
 
@@ -480,7 +502,7 @@ export const Home = props => {
                 <View
                   style={{ width: '100%', paddingLeft: '5%', marginTop: RF(10) }}>
                   <InputText
-                    placeholder={'Full Name'} 
+                    placeholder={'Full Name'}
                     ic={AppIcons.person}
                     height={45}
                     width={'95%'}
@@ -560,53 +582,53 @@ export const Home = props => {
                   height: '70%',
                   paddingHorizontal: '8%',
                 }}>
-                  {admins?.map((user)=>{
-                    return(
-                      <TouchableOpacity onPress={() => edit(user)}>
+                {admins?.map((user) => {
+                  return (
+                    <TouchableOpacity onPress={() => edit(user)}>
+                      <View
+                        style={{
+                          width: '100%',
+                          paddingLeft: '5%',
+                          marginTop: RF(5),
+                          backgroundColor: '#F2F2F2',
+                          height: 80,
+                          paddingHorizontal: '5%',
+                          flexDirection: 'row',
+                        }}>
                         <View
                           style={{
-                            width: '100%',
-                            paddingLeft: '5%',
-                            marginTop: RF(5),
-                            backgroundColor: '#F2F2F2',
-                            height: 80,
-                            paddingHorizontal: '5%',
-                            flexDirection: 'row',
+                            width: '50%',
+                            height: '100%',
+                            paddingTop: 15,
+                            paddingLeft: 10,
                           }}>
-                          <View
-                            style={{
-                              width: '50%',
-                              height: '100%',
-                              paddingTop: 15,
-                              paddingLeft: 10,
-                            }}>
-                            <H1 size={RF(7)} color={'#565656'}>
-                              {user.role}
-                            </H1>
-                          </View>
-                          <View
-                            style={{
-                              width: '50%',
-                              height: '100%',
-                              paddingTop: 15,
-                              paddingLeft: 10,
-                            }}>
-                            <P size={RF(7)} color={'#565656'}>
-                              {user.name.value}  
-                            </P>
-                            <P size={RF(7)} color={'#565656'}>
-                              {user.emails[0].value}
-                            </P>
-                            <P size={RF(7)} color={'#565656'}>
-                              {user.phoneNumbers[0].countryCode}  {user.phoneNumbers[0].value}
-                            </P>
-                          </View>
+                          <H1 size={RF(7)} color={'#565656'}>
+                            {user.role}
+                          </H1>
                         </View>
-                      </TouchableOpacity>
-                    )
-                  })}
-                
-              
+                        <View
+                          style={{
+                            width: '50%',
+                            height: '100%',
+                            paddingTop: 15,
+                            paddingLeft: 10,
+                          }}>
+                          <P size={RF(7)} color={'#565656'}>
+                            {user.name.value}
+                          </P>
+                          <P size={RF(7)} color={'#565656'}>
+                            {user.emails[0].value}
+                          </P>
+                          <P size={RF(7)} color={'#565656'}>
+                            {user.phoneNumbers[0].countryCode}  {user.phoneNumbers[0].value}
+                          </P>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  )
+                })}
+
+
               </View>
             )}
           </View>
@@ -690,7 +712,7 @@ export const Home = props => {
                   paddingHorizontal: '2%',
                 }}>
                 <H1 size={RF(7)} color={'#716D6D'}>
-                   {editInfo.name.value}
+                  {editInfo.name.value}
                 </H1>
                 <Hr size={RF(7)} color={'#716D6D'}>
                   Name
@@ -703,7 +725,7 @@ export const Home = props => {
                   paddingHorizontal: '2%',
                 }}>
                 <H1 size={RF(7)} color={'#716D6D'}>
-                   {editInfo.officeAddress.value}
+                  {editInfo.officeAddress.value}
                 </H1>
                 <Hr size={RF(7)} color={'#716D6D'}>
                   Address
@@ -716,7 +738,7 @@ export const Home = props => {
                   paddingHorizontal: '2%',
                 }}>
                 <H1 size={RF(7)} color={'#716D6D'}>
-                   {editInfo.emails[0].value || "N/A"}
+                  {editInfo.emails[0].value || "N/A"}
                 </H1>
                 <Hr size={RF(7)} color={'#716D6D'}>
                   Email Address
@@ -742,7 +764,7 @@ export const Home = props => {
                   paddingHorizontal: '2%',
                 }}>
                 <H1 size={RF(7)} color={'#716D6D'}>
-                   {editInfo.role}
+                  {editInfo.role}
                 </H1>
                 <Hr size={RF(7)} color={'#716D6D'}>
                   Executive Role
@@ -782,7 +804,7 @@ export const Home = props => {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => setshowModal(true)}>
+                <TouchableOpacity onPress={() => setDeleteAdminModal(true)}>
                   <View
                     style={{
                       backgroundColor: '#5E38AF',
@@ -814,7 +836,7 @@ export const Home = props => {
       {/* end Admin Modal */}
 
 
-{/* House Modal */}
+      {/* House Modal */}
       <Modal
         isVisible={houseVisible}
         onBackButtonPress={() => setHouseVisible(false)}
@@ -954,7 +976,7 @@ export const Home = props => {
                     width={'95%'}
                     // maxLength={11}
                     // keyboardType={'numeric'}
-                    value={phone} 
+                    value={phone}
                     onChange={value => setPhone(value)}
                   />
                 </View>
@@ -1037,50 +1059,22 @@ export const Home = props => {
               <View
                 style={{
                   width: '100%',
-                  marginTop: RF(20),
+                  marginTop: RF(5),
                   height: '70%',
-                  paddingHorizontal: '8%',
+                  paddingHorizontal: '2%',
                 }}>
-               
+
                 <TouchableOpacity>
                   <View
-                    style={{
-                      width: '100%',
-                      paddingLeft: '5%',
-                      marginTop: RF(10),
-                      backgroundColor: '#F2F2F2',
-                      height: 80,
-                      paddingHorizontal: '5%',
-                      flexDirection: 'row',
-                    }}>
-                    {/* <View
-                      style={{
-                        width: '50%',
-                        height: '100%',
-                        paddingTop: 15,
-                        paddingLeft: 10,
-                      }}>
-                      <H1 size={RF(7)} color={'#565656'}>
-                        V. Chairman
-                      </H1>
-                    </View> */}
-                    <View
-                      style={{
-                        width: '50%',
-                        height: '100%',
-                        paddingTop: 15,
-                        paddingLeft: 10,
-                      }}>
-                      <P size={RF(7)} color={'#565656'}>
-                        Avis Charles
-                      </P>
-                      <P size={RF(7)} color={'#565656'}>
-                        avisc@infoabc.com
-                      </P>
-                      <P size={RF(7)} color={'#565656'}>
-                        08022222222
-                      </P>
-                    </View>
+                    style={{ width: '100%', paddingLeft: '2%', marginTop: RF(5) }}>
+                    <InputText
+                      placeholder={'Search by name or house number'}
+                      ic={AppIcons.person}
+                      height={45}
+                      width={'95%'}
+                      value={name}
+                      onChange={value => setName(value)}
+                    />
                   </View>
                 </TouchableOpacity>
               </View>
@@ -1297,9 +1291,9 @@ export const Home = props => {
         onBackdropPress={() => setVotingVisible(false)}>
         <View
           style={{
-          //  height: RF(500),
+            //  height: RF(500),
             width: '100%',
-            paddingBottom: 30,
+            paddingBottom: 10,
             backgroundColor: Colors.appWhite,
           }}>
           <TouchableOpacity
@@ -1314,35 +1308,185 @@ export const Home = props => {
         </View>
 
 
-        <View>
+        <View
+          style={{
+            height: RF(700),
+            width: '100%',
+            backgroundColor: Colors.appWhite,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
           <TouchableOpacity style={{
-            marginVertical: 10,
-
-            marginLeft: 20
+            marginBottom: RF(15),
+            backgroundColor: '#F2F2F2',
+            width: RF(320),
+            height: RF(40),
+            justifyContent: 'center',
+            paddingLeft: RF(20)
           }}
-            onPress={() => setVotingVisible(false)}>
-            <H1 >Start New Election</H1>
+            onPress={() => setNewElectionModal(true)}
+          >
+            <P size={RF(13)} color={Colors.appPrimary}>Start New Election</P>
           </TouchableOpacity>
           <TouchableOpacity style={{
-            marginVertical: 10,
+            marginBottom: RF(15),
+            backgroundColor: '#F2F2F2',
+            width: RF(320),
+            height: RF(40),
+            justifyContent: 'center',
+            paddingLeft: RF(20)
 
-            marginLeft: 20
-          }}
-            onPress={() => setVotingVisible(false)}>
-          <H1 size={RF(7)} color={Colors.appPrimary}>
-                Add New Admin
-          </H1>
+
+          }}>
+            <P size={RF(13)} color={Colors.appPrimary}>Ongoing Election</P>
           </TouchableOpacity>
           <TouchableOpacity style={{
-            marginVertical: 10,
+            marginBottom: RF(15),
+            backgroundColor: '#F2F2F2',
+            width: RF(320),
+            height: RF(40),
+            justifyContent: 'center',
+            paddingLeft: RF(20)
 
-            marginLeft: 20
-          }} 
-            onPress={() => setVotingVisible(false)}>
-            <H1 >End Election</H1>
+          }}>
+            <P size={RF(13)} color={Colors.appPrimary}>End Election</P>
           </TouchableOpacity>
         </View>
+
       </Modal>
+
+      {/* Micheal Voting system modal */}
+      <Modal
+        isVisible={newElectionModal}
+        onBackButtonPress={() => setNewElectionModal(false)}
+        onBackdropPress={() => setNewElectionModal(false)}>
+
+      </Modal>
+
+      {/* End Micheal Voting system modal */}
+
+
+      {/* Delete admin modal */}
+
+      <Modal
+        isVisible={deleteAdminModal}
+        onBackButtonPress={() => setDeleteAdminModal(false)}
+        onBackdropPress={() => setDeleteAdminModal(false)}>
+
+
+        <View
+          style={{
+            //  height: RF(500),
+            width: '90%',
+            paddingBottom: 10,
+            backgroundColor: Colors.appWhite,
+            marginHorizontal: RF(10)
+
+          }}>
+          <TouchableOpacity
+            style={{ marginTop: 15, marginLeft: 20 }}
+            onPress={() => setVotingVisible(false)}>
+            <Image
+              style={{ height: 17.5, width: 15 }}
+              source={AppIcons.cancel}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+
+          <View
+            style={{
+              marginHorizontal: RF(20),
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignSelf: 'center',
+              width: '90%',
+              marginTop: RF(4)
+            }}
+          >
+            <Text style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: RF(13),
+              width: '80%',
+              textAlign: 'center',
+              lineHeight: RF(24)
+            }}>Are you sure you want to delete this admin</Text>
+
+          </View>
+
+
+          <View
+            style={{
+              width: '100%',
+              height: 60,
+              paddingHorizontal: '2%',
+              flexDirection: 'row',
+              alignItems: 'center',
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignSelf: 'center',
+
+            }}>
+            <TouchableOpacity onPress={() => {
+              setDeleteAdminModal(false)
+            }}>
+              <View
+                style={{
+                  backgroundColor: '#A986A7',
+                  width: 80,
+                  height: 30,
+                  justifyContent: 'center',
+                  borderRadius: 3,
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}>
+                <Image
+                  style={{ height: 13, width: 11 }}
+                  source={AppIcons.edit}
+                  resizeMode="contain"
+                />
+                <View style={{ marginLeft: 10 }}>
+                  <H1 size={RF(7)} color={'#FFFFFF'}>
+                    Cancel
+                  </H1>
+                </View>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setshowModal(true)}>
+              <View
+                style={{
+                  backgroundColor: '#5E38AF',
+                  width: 80,
+                  height: 30,
+                  justifyContent: 'center',
+                  borderRadius: 3,
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  marginLeft: 40,
+                }}>
+                <Image
+                  style={{ height: 13, width: 11 }}
+                  source={AppIcons.del}
+                  resizeMode="contain"
+                />
+                <View style={{ marginLeft: 10 }}>
+                  <H1 size={RF(7)} color={'#FFFFFF'}>
+                    Delete
+                  </H1>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+
+        </View>
+
+      </Modal>
+
+
+      {/* end Delete admin modal */}
+
       <Toast ref={ref => Toast.setRef(ref)} />
     </View>
   );

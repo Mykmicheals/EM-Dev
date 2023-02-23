@@ -19,6 +19,7 @@ import CheckBox from 'react-native-check-box';
 import TransactionCard from '../../../components/transactionCard';
 import CircleImage from '../../../components/circleImage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { axiosCalls } from '../../../helper/api';
 
 export const Commerce = props => {
   const [visible, setVisible] = useState(false);
@@ -27,6 +28,25 @@ export const Commerce = props => {
   const [arenaModal, setArenaModal] = useState(false);
   const [investModal, setInvestModal] = useState(false);
   const [active, setActive] = useState('goods');
+  const [foods, setFoods]  = useState([])
+  
+
+  const getFoods = async()=>{
+    try {
+      const res = await axiosCalls('/foods', 'GET');
+     // setBalance(res.data.balance.value);
+     console.warn(res.data)
+   
+    } catch (e) {
+      console.warn('fetching foods', e);
+    }
+  };
+  
+
+  useEffect(()=>{
+    getFoods()
+  },[])
+
 
   return (
     <View

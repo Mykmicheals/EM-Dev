@@ -3,6 +3,8 @@ import {endPoint} from './baseUrl';
 import {getData} from './storage';
 import {ToastLong} from './toast';
 
+
+
 export const axiosCalls = async (path, method, data = null) => {
   const token = await getData('token');
 
@@ -12,11 +14,12 @@ export const axiosCalls = async (path, method, data = null) => {
       method: method,
       url: `${endPoint}${path}`,
       data: data,
-      headers: {Authorization: `Bearer ${token}`},
+      headers: {Authorization: `Bearer ${token}`}
     });
     if (res) {
       return res;
     }
+  
   } catch (err) {
     console.warn('gfgfgfg???>>>>', err);
     if (err.response) {

@@ -17,11 +17,23 @@ import CircleImage from '../../../components/circleImage';
 import InputText from '../../../components/textInput';
 import {Button} from '../../../component/button';
 
+
+
+
 export const Payment = props => {
   const [visible, setVisible] = useState(false);
   const [payment, setPayment] = useState(false);
   const [clickedTitle, setClickedTitle] = useState('');
   const [active, setActive] = useState('');
+
+const [newElectionModal, setNewElectionModal] =useState(false)
+const [allVotes, setAllVotes] = useState(false)
+const [addNewCandidate,setAddNewCandidate] = useState(false)
+
+const [votingVisible, setVotingVisible] = useState(true);
+const [name, setName] = useState('');
+const [exco, setExco] = useState('');
+const [loading, setLoading] = useState(false);
 
   const Estate = value => {
     setClickedTitle(value);
@@ -53,12 +65,20 @@ export const Payment = props => {
         paddingTop: RR(15),
         backgroundColor: Colors.appWhite,
       }}>
+
+
+        <View
+      style={{
+        flex: 1,
+        paddingTop: RR(15),
+        backgroundColor: Colors.appWhite,
+      }}>
       <View
         style={{
           width: '100%',
           paddingLeft: '5%',
         }}>
-        <P color={Colors.appPrimary}>Payment</P>
+        <P color={Colors.appPrimary}>Voting System</P>
       </View>
 
       <View
@@ -74,7 +94,7 @@ export const Payment = props => {
           style={{
             height: '70%',
             width: '45%',
-            backgroundColor: !payment ? Colors.appPrimary : Colors.appWhite,
+            backgroundColor: !allVotes ? Colors.appPrimary : Colors.appWhite,
             borderWidth: 1,
             borderColor: Colors.appPrimary,
             justifyContent: 'center',
@@ -82,14 +102,14 @@ export const Payment = props => {
             borderTopLeftRadius: 5,
             borderBottomLeftRadius: 5,
           }}
-          onPress={() => setPayment(false)}>
-          <H1 color={payment ? Colors.appPrimary : Colors.appWhite}>Add new</H1>
+          onPress={() => setAllVotes(false)}>
+          <H1 color={allVotes ? Colors.appPrimary : Colors.appWhite}>Candidates</H1>
         </TouchableOpacity>
         <TouchableOpacity
           style={{
             height: '70%',
             width: '45%',
-            backgroundColor: payment ? Colors.appPrimary : Colors.appWhite,
+            backgroundColor: allVotes ? Colors.appPrimary : Colors.appWhite,
             borderWidth: 1,
             borderColor: Colors.appPrimary,
             justifyContent: 'center',
@@ -97,220 +117,352 @@ export const Payment = props => {
             borderTopRightRadius: 5,
             borderBottomRightRadius: 5,
           }}
-          onPress={() => setPayment(true)}>
-          <H1 color={!payment ? Colors.appPrimary : Colors.appWhite}>
-            Payments
+          onPress={() => setAllVotes(true)}>
+          <H1 color={!allVotes ? Colors.appPrimary : Colors.appWhite}>
+            All Votes
           </H1>
         </TouchableOpacity>
       </View>
+      
 
-      <View 
-        style={{
-          width: '100%',
-          paddingLeft: '5%',
-        }}>
-        <H1 color={'#716D6D'} size={RF(7)}>
-          Add and manage estate bill or levies
-        </H1>
-      </View>
+  {! allVotes &&    <View
+              style={{
+                width: '100%',
+                height: RF(50),
+                flexDirection: 'row',
+                marginTop: RF(0),
+                paddingLeft: '30%',
+              }}>
+              <View
+                style={{
+                  height: RF(60),
+                  justifyContent: 'space-around',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}>
+                <TouchableOpacity>
+                  {addNewCandidate ? (
+                    <View
+                      style={{
+                        height: RF(50),
+                        width: RF(220),
+                        flexDirection: 'row',
+                        backgroundColor: '#F2F2F2',
+                        paddingLeft: RF(20),
+                        borderRadius: RF(20),
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingRight: RF(10),
+                      }}>
+                      <View style={{ marginRight: RF(0) }}>
+                        <H1 size={RF(7)} color={Colors.appPrimary}>
+                      
+                          Add New Candidate
+                        </H1>
+                      </View>
+                      <CircleImage
+                        icon={AppIcons.admin}
+                        bg={Colors.appPrimary}
+                      />
+                    </View>
+                  ) : (
+                    <CircleImage
+                      icon={AppIcons.admin}
+                      onPress={() => setAddNewCandidate(true)}
+                    />
+                  )}
+                </TouchableOpacity>
 
-      <View
-        style={{
-          width: '100%',
-          justifyContent: 'space-between',
-          paddingHorizontal: '5%',
-          paddingVertical: 10,
-          flexDirection: 'row',
-          marginTop: 15,
-        }}>
-        <MainCard
-          text={'Update Estate Levy'}
-          des={'Update the new estate levy'}
-          icon={AppIcons.flag}
-          onPress={() => Estate('Update Estate Levy')}
-        />
-        <MainCard
-          text={'Update Water Bill'}
-          des={'Pay for your water bills'}
-          icon={AppIcons.tap}
-          onPress={() => Water('Update Water Bill')}
-        />
-      </View>
+                <TouchableOpacity style={{ marginLeft: RF(15) }}>
+                  {!addNewCandidate ? (
+                    <View
+                      style={{
+                        height: RF(50),
+                        width: RF(220),
+                        flexDirection: 'row',
+                        backgroundColor: '#F2F2F2',
+                        paddingLeft: RF(25),
+                        borderRadius: RF(20),
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingRight: RF(10),
+                      }}>
+                      <View style={{ marginRight: RF(0) }}>
+                        <H1 size={RF(7)} color={Colors.appPrimary}>
+                          {' '}
+                          View Candidates
+                        </H1>
+                      </View>
+                      <CircleImage
+                        icon={AppIcons.guest}
+                        bg={Colors.appPrimary}
+                      />
+                    </View>
+                  ) : (
+                    <CircleImage
+                      icon={AppIcons.guest}
+                      onPress={() => setAddNewCandidate(false)}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+    </View>}
 
-      <View
-        style={{
-          width: '100%',
-          justifyContent: 'space-between',
-          paddingHorizontal: '5%',
-          paddingVertical: 10,
-          flexDirection: 'row',
-          marginTop: 1,
-        }}>
-        <MainCard
-          text={'Update Waste Bill'}
-          des={'Update the new waste bill'}
-          icon={AppIcons.del}
-          onPress={() => Waste('Update Waste Bill')}
-        />
-        <MainCard
-          text={'Update New Project'}
-          des={'Update new project contribution'}
-          icon={AppIcons.time}
-          onPress={() => Project('Update New Project')}
-        />
-      </View>
 
-      <Modal
-        isVisible={visible}
-        onBackButtonPress={() => setVisible(false)}
-        onBackdropPress={() => setVisible(false)}>
+{!allVotes ?<View>
+
+{addNewCandidate? <View>
+              <View style={{
+                marginTop:RF(50),
+                paddingLeft: '5%'
+              }}>
+              <P size={RF(13)} color={Colors.appPrimary}>New Candidate</P>   
+              </View>
+            
+              <View
+                  style={{ width: '100%', paddingLeft: '5%', marginTop: RF(10) }}>
+                  <InputText
+                    placeholder={'Full Name'} 
+                    ic={AppIcons.person}
+                    height={45}
+                    width={'95%'}
+                    value={name}
+                    onChange={value => setName(value)}
+                  />
+                </View>
+
+            
+
+                <View
+                  style={{ width: '100%', paddingLeft: '5%', marginTop: RF(20) }}>
+                  <InputText
+                    placeholder={'Exco Role'}
+                    ic={AppIcons.exco}
+                    height={45}
+                    width={'95%'}
+                    value={exco}
+                    onChange={value => setExco(value)}
+                  />
+                </View>
+
+     
+
+                <Button
+                  marginTop={30}
+                  text={'Submit'}
+                  width={'90%'}
+                  marginLeft={'5%'}
+                  height={50}
+                  loading={loading}
+                  onPress={() => createAdmin()}
+                />
+    
+    </View>:
+  
+  <View  
+  style={{
+                height: RF(300),
+                width: '100%',
+                backgroundColor: Colors.appWhite,
+                justifyContent:'center',
+              alignItems:'center'
+              }}>
+   <TouchableOpacity style={{
+      marginBottom:RF(15),
+      backgroundColor: '#F2F2F2',
+      width: RF(380),
+      height:RF(40),
+      alignItems:'center',
+      flexDirection:'row',
+      justifyContent:'space-between',
+      paddingHorizontal:RF(20)
+    }}
+    onPress={() => setNewElectionModal(true)}
+    >
+      <Image
+    style={{ height: 17.5, width: 15,  }}
+    source={AppIcons.person}
+    resizeMode="contain"
+      />
+    <P size={RF(13)} color={Colors.appPrimary}>Alvis Charles</P>
+
+    <P size={RF(14)} color={Colors.appPrimary}>Chairman</P>
+    </TouchableOpacity>
+
+    <TouchableOpacity style={{
+      marginBottom:RF(15),
+      backgroundColor: '#F2F2F2',
+      width: RF(380),
+      height:RF(40),
+      alignItems:'center',
+      flexDirection:'row',
+      justifyContent:'space-between',
+      paddingHorizontal:RF(20)
+    }}
+    onPress={() => setNewElectionModal(true)}
+    >
+      <Image
+    style={{ height: 17.5, width: 15,  }}
+    source={AppIcons.person}
+    resizeMode="contain"
+      />
+    <P size={RF(13)} color={Colors.appPrimary}>Alvis Charles</P>
+
+    <P size={RF(14)} color={Colors.appPrimary}>Chairman</P>
+    </TouchableOpacity>
+
+    <TouchableOpacity style={{
+      marginBottom:RF(15),
+      backgroundColor: '#F2F2F2',
+      width: RF(380),
+      height:RF(40),
+      alignItems:'center',
+      flexDirection:'row',
+      justifyContent:'space-between',
+      paddingHorizontal:RF(20)
+    }}
+    onPress={() => setNewElectionModal(true)}
+    >
+      <Image
+    style={{ height: 17.5, width: 15,  }}
+    source={AppIcons.person}
+    resizeMode="contain"
+      />
+    <P size={RF(13)} color={Colors.appPrimary}>Alvis Charles</P>
+
+    <P size={RF(14)} color={Colors.appPrimary}>Chairman</P>
+    </TouchableOpacity>
+ 
+  </View>
+    
+    }
+
+
+</View>
+:
+
+
+
+<View style={{paddingHorizontal:'10%', marginTop:'5%',flexDirection:'row', justifyContent:'space-between'}}>
+<View style={{
+      marginBottom:RF(15),
+      backgroundColor: '#F2F2F2',
+      width:'70%',
+      height:RF(40),
+      alignItems:'center',
+      flexDirection:'row',
+      justifyContent:'space-between',
+      paddingHorizontal:RF(20)
+    }}
+   
+    >
+  
+    <P size={RF(13)} color={Colors.appPrimary}>Alvis Charles</P>
+    </View>
+
+<View
+ style={{
+  marginBottom:RF(15),
+  backgroundColor: '#F2F2F2',
+  width:'25%',
+  height:RF(40),
+  alignItems:'center',
+  flexDirection:'row',
+  justifyContent:'space-between',
+  paddingHorizontal:RF(15)
+}}
+>
+
+<H1 size={RF(18)} color={Colors.appPrimary}>60%</H1>
+
+</View>
+</View>
+
+
+
+
+
+}
+
+
+
+    
+    </View>    
+
+
+
+    <Modal
+        isVisible={votingVisible}
+        onBackButtonPress={() => setVotingVisible(false)}
+        onBackdropPress={() => setVotingVisible(false)}>
         <View
           style={{
-            height: RF(700),
+          //  height: RF(500),
             width: '100%',
-
+           paddingBottom: 10,
             backgroundColor: Colors.appWhite,
           }}>
-          <View
-            style={{
-              width: '100%',
-              height: RF(100),
-
-              flexDirection: 'row',
-              marginTop: RF(10),
-            }}>
-            <View
-              style={{
-                height: RF(100),
-                width: '40%',
-
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <H1 color={Colors.appPrimary} size={RF(8)}>
-                Make Payment
-              </H1>
-            </View>
-            <View
-              style={{
-                height: RF(100),
-                width: '50%',
-
-                justifyContent: 'space-around',
-                alignItems: 'center',
-                flexDirection: 'row',
-              }}>
-              <CircleImage
-                bg={active == 'Estate' ? Colors.appPrimary : null}
-                icon={AppIcons.flag}
-                onPress={() => setActive('Estate')}
-              />
-
-              <CircleImage
-                bg={active == 'Water' ? Colors.appPrimary : null}
-                icon={AppIcons.tap}
-                onPress={() => setActive('Water')}
-              />
-              <CircleImage
-                bg={active == 'Waste' ? Colors.appPrimary : null}
-                icon={AppIcons.del}
-                onPress={() => setActive('Waste')}
-              />
-              <CircleImage
-                bg={active == 'Project' ? Colors.appPrimary : null}
-                icon={AppIcons.time}
-                onPress={() => setActive('Project')}
-              />
-            </View>
-          </View>
-
-          <View
-            style={{
-              width: '100%',
-              height: RF(100),
-
-              flexDirection: 'row',
-              marginTop: RF(10),
-              paddingLeft: '8%',
-            }}>
-            <View
-              style={{
-                height: RF(100),
-
-                justifyContent: 'space-around',
-                alignItems: 'center',
-                flexDirection: 'row',
-              }}>
-              <CircleImage
-                bg={Colors.appPrimary}
-                icon={
-                  active == 'Estate'
-                    ? AppIcons.flag
-                    : active == 'Project'
-                    ? AppIcons.time
-                    : active == 'Waste'
-                    ? AppIcons.del
-                    : AppIcons.tap
-                }
-                onPress={() => setActive('Estate')}
-              />
-            </View>
-            <View
-              style={{
-                height: RF(100),
-
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginLeft: '5%',
-              }}>
-              <H1 color={Colors.appPrimary} size={RF(8)}>
-                {active == 'Estate'
-                  ? 'Update Estate Levy'
-                  : active == 'Waste'
-                  ? 'Update Waste Bill'
-                  : active == 'Project'
-                  ? 'Update New Project Fee'
-                  : 'Update Water Bill'}
-              </H1>
-            </View>
-          </View>
-
-          <View style={{width: '100%', paddingLeft: '5%', marginTop: RF(50)}}>
-            <InputText
-              placeholder={'Previous  Amount'}
-              ic={AppIcons.n}
-              width={'95%'}
+          <TouchableOpacity
+            style={{ marginTop: 15, marginLeft: 20 }}
+            onPress={() => setVotingVisible(false)}>
+            <Image
+              style={{ height: 17.5, width: 15 }}
+              source={AppIcons.cancel}
+              resizeMode="contain"
             />
-          </View>
-
-          <View style={{width: '100%', paddingLeft: '5%', marginTop: RF(20)}}>
-            <InputText
-              placeholder={'New Amount'}
-              ic={AppIcons.n}
-              width={'95%'}
-            />
-          </View>
-
-          <Button
-            marginTop={30}
-            text={'Submit'}
-            width={'90%'}
-            marginLeft={'5%'}
-            onPress={() => setVisible(false)}
-          />
-
-          <Button
-            marginTop={10}
-            width={'90%'}
-            text={'Cancel'}
-            marginLeft={'5%'}
-            bg={Colors.appWhite}
-            borderWidth={1}
-            color={'#A986A7'}
-            onPress={() => setVisible(false)}
-          />
+          </TouchableOpacity>
         </View>
+
+
+<View  
+style={{
+              height: RF(700),
+              width: '100%',
+              backgroundColor: Colors.appWhite,
+              justifyContent:'center',
+            alignItems:'center'
+            }}>
+ <TouchableOpacity style={{
+    marginBottom:RF(15),
+    backgroundColor: '#F2F2F2',
+    width: RF(320),
+    height:RF(40),
+    justifyContent:'center',
+    paddingLeft:RF(20)
+  }}
+  onPress={() => setVotingVisible(false)}
+  >
+  <P size={RF(13)} color={Colors.appPrimary}>Start New Election</P>
+  </TouchableOpacity>
+  <TouchableOpacity style={{
+    marginBottom:RF(15),
+    backgroundColor: '#F2F2F2',
+    width: RF(320),
+    height:RF(40),
+    justifyContent:'center',
+    paddingLeft:RF(20)
+   
+
+  }}>
+  <P size={RF(13)} color={Colors.appPrimary}>Ongoing Election</P>
+  </TouchableOpacity>
+  <TouchableOpacity style={{
+    marginBottom:RF(15),
+    backgroundColor: '#F2F2F2',
+    width: RF(320),
+    height:RF(40),
+    justifyContent:'center',
+    paddingLeft:RF(20)
+   
+
+  }}>
+  <P size={RF(13)} color={Colors.appPrimary}>End Election</P>
+  </TouchableOpacity>
+</View>
+       
       </Modal>
+
+
     </View>
   );
 };

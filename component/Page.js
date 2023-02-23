@@ -18,6 +18,7 @@ import Service from '../src/Auth/Home/service';
 import Wallet from '../src/Auth/Home/wallet';
 import Forum from '../src/Auth/Home/forum';
 import House from '../src/Auth/Home/house';
+import Voting from '../src/Auth/Home/voting'
 import CircleImage from '../components/circleImage';
 import {AppIcons} from '../helper/images';
 import {Colors, RF} from '../helper/constants';
@@ -61,6 +62,8 @@ const Page = props => {
         {realActive == 'House' ? <House props={props} /> : null}
         {realActive == 'Service' ? <Service props={props} /> : null}
         {realActive == 'Wallet' ? <Wallet props={props} /> : null}
+        {realActive == 'Voting' ? <Voting props={props} /> : null}
+     
       </View>
       <View
         style={{
